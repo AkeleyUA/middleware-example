@@ -1,17 +1,20 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import {
+  createStore,
+  combineReducers,
+  applyMiddleware,
+} from "@reduxjs/toolkit";
+import { getJsonDataMiddleware } from "./middlewares";
+import { dataReducer } from "./reducer";
+import { composeWithDevTools } from "redux-devtools-extension";
 
-export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-  },
+const rootReducer = combineReducers({
+  data: dataReducer,
 });
+
+export const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(getJsonDataMiddleware))
+);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
